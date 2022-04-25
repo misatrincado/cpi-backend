@@ -1,4 +1,20 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { CreateParametroDto } from './dto/create.dto';
+import { ParametroService } from './parametro.service';
 
 @Controller('parametro')
-export class ParametroController {}
+export class ParametroController {
+    constructor(private readonly parametroService: ParametroService) {}
+
+    @Get('/:id')
+    async findBySubambito(@Param('id') id: string) {
+        const data = await this.parametroService.findBySubambito(id);
+        return {data}
+    }
+
+    @Post()
+    async create(@Body() dto: CreateParametroDto) {
+        const data = await this.parametroService.create(dto);
+        return {data}
+    }
+}

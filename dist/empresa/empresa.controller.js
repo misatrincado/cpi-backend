@@ -21,7 +21,8 @@ let EmpresaController = class EmpresaController {
         this.empresaService = empresaService;
     }
     async findAll() {
-        return this.empresaService.findAll();
+        const data = await this.empresaService.findAll();
+        return { data };
     }
     async create(dto) {
         const data = await this.empresaService.create(dto);

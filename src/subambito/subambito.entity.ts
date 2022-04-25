@@ -6,7 +6,7 @@ export class Subambito {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => Ambito, (e) => e)
+    @ManyToOne(() => Ambito, (e) => e) 
     @JoinColumn({name: 'idAmbito'})
     ambito: number;
 

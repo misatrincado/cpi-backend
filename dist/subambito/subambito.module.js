@@ -8,12 +8,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SubambitoModule = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
 const subambito_controller_1 = require("./subambito.controller");
+const subambito_entity_1 = require("./subambito.entity");
+const subambito_service_1 = require("./subambito.service");
 let SubambitoModule = class SubambitoModule {
 };
 SubambitoModule = __decorate([
     (0, common_1.Module)({
-        controllers: [subambito_controller_1.SubambitoController]
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([
+                subambito_entity_1.Subambito,
+            ]),
+        ],
+        controllers: [subambito_controller_1.SubambitoController],
+        providers: [subambito_service_1.SubambitoService],
+        exports: [subambito_service_1.SubambitoService],
     })
 ], SubambitoModule);
 exports.SubambitoModule = SubambitoModule;

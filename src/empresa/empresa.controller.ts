@@ -8,7 +8,8 @@ export class EmpresaController {
 
     @Get()
     async findAll() {
-        return this.empresaService.findAll();
+        const data = await this.empresaService.findAll();
+        return {data}
     }
 
     @Post()
