@@ -24,7 +24,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Calificacion.prototype, "proyecto", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'datetime' }),
     __metadata("design:type", String)
 ], Calificacion.prototype, "fechaCalificacion", void 0);
 __decorate([

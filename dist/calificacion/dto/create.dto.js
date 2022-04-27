@@ -25,9 +25,5 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Boolean)
 ], CreateCalificacionDto.prototype, "vigente", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], CreateCalificacionDto.prototype, "urlCalificacion", void 0);
 exports.CreateCalificacionDto = CreateCalificacionDto;
 //# sourceMappingURL=create.dto.js.map

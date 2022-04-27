@@ -3,5 +3,6 @@ export declare class Ambito {
     nombre: string;
     desc: string;
     activo: boolean;
+    color: string;
     created: string;
 }

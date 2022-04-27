@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateParametroDto } from './dto/create.dto';
+import { UpdatesParametroDto } from './dto/update.dto';
 import { ParametroService } from './parametro.service';
 
 @Controller('parametro')
@@ -12,9 +13,22 @@ export class ParametroController {
         return {data}
     }
 
+    @Get('/indicadores/:id')
+    async obtainAllWithIndicators(@Param('id') id: string) {
+        const data = await this.parametroService.obtainAllWithIndicators(id);
+        console.log("data",data)
+        return {data}
+    }
+
     @Post()
     async create(@Body() dto: CreateParametroDto) {
         const data = await this.parametroService.create(dto);
+        return {data}
+    }
+
+    @Post('update')
+    async update(@Body() dto: UpdatesParametroDto) {
+        const data = await this.parametroService.update(dto);
         return {data}
     }
 }

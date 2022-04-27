@@ -16,15 +16,15 @@ export class ProyectoService {
         return getAll
     }
     async create(dto: CreateProyectoDto) {
-        const empresa = new Proyecto()
-        empresa.nombre = dto.nombre
-        empresa.desc = dto.desc
-        empresa.empresa = dto.idEmpresa
-        empresa.comuna = dto.comuna
-        empresa.url_proyecto = dto.url_proyecto
-        empresa.imagen = dto.imagen
-        empresa.direccion = dto.direccion
-        empresa.tipologia = dto.idTipologia
-        return this.empresaRepository.save(empresa)
+        const elem = new Proyecto()
+        elem.nombre = dto.nombre
+        elem.desc = dto.desc
+        elem.empresa = dto.idEmpresa
+        elem.comuna = dto.comuna
+        elem.url_proyecto = dto.url_proyecto
+        elem.imagen = dto.imagen
+        elem.direccion = dto.direccion
+        elem.tipologia = dto.idTipologia
+        return this.empresaRepository.save(elem)
     }
 }

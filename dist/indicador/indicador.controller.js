@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.IndicadorController = void 0;
 const common_1 = require("@nestjs/common");
 const create_dto_1 = require("./dto/create.dto");
+const update_dto_1 = require("./dto/update.dto");
 const indicador_service_1 = require("./indicador.service");
 let IndicadorController = class IndicadorController {
     constructor(indicadorService) {
@@ -26,6 +27,10 @@ let IndicadorController = class IndicadorController {
     }
     async create(dto) {
         const data = await this.indicadorService.create(dto);
+        return { data };
+    }
+    async update(dto) {
+        const data = await this.indicadorService.update(dto);
         return { data };
     }
 };
@@ -43,6 +48,13 @@ __decorate([
     __metadata("design:paramtypes", [create_dto_1.CreateIndicadoraDto]),
     __metadata("design:returntype", Promise)
 ], IndicadorController.prototype, "create", null);
+__decorate([
+    (0, common_1.Post)('update'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_dto_1.UpdateIndicadoraDto]),
+    __metadata("design:returntype", Promise)
+], IndicadorController.prototype, "update", null);
 IndicadorController = __decorate([
     (0, common_1.Controller)('indicador'),
     __metadata("design:paramtypes", [indicador_service_1.IndicadorService])

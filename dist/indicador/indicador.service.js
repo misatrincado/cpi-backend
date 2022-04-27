@@ -39,6 +39,17 @@ let IndicadorService = class IndicadorService {
         console.log("res create Indicador", res);
         return res;
     }
+    async update(dto) {
+        const find = await this.inidicadorRepository.findOne({
+            id: dto.id
+        });
+        if (find) {
+            const update = Object.assign(find, dto);
+            const saveDto = await this.inidicadorRepository.save(update);
+            return saveDto;
+        }
+        return null;
+    }
 };
 IndicadorService = __decorate([
     (0, common_1.Injectable)(),

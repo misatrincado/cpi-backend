@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateIndicadoraDto } from './dto/create.dto';
+import { UpdateIndicadoraDto } from './dto/update.dto';
 import { Indicador } from './indicador.entity';
 
 @Injectable()
@@ -29,5 +30,17 @@ export class IndicadorService {
         const res = await this.inidicadorRepository.save(elem)
         console.log("res create Indicador", res)
         return res
+    }
+
+    async update(dto: UpdateIndicadoraDto) {
+        const find = await this.inidicadorRepository.findOne({
+            id: dto.id
+        })
+        if(find) {
+          const update = Object.assign(find, dto)
+           const saveDto = await this.inidicadorRepository.save(update)
+           return saveDto;
+        }
+        return null
     }
 }

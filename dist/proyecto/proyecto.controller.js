@@ -21,7 +21,8 @@ let ProyectoController = class ProyectoController {
         this.proyectoService = proyectoService;
     }
     async findAll() {
-        return this.proyectoService.findAll();
+        const data = await this.proyectoService.findAll();
+        return { data };
     }
     async create(dto) {
         const data = await this.proyectoService.create(dto);

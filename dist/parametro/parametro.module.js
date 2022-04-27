@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParametroModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const indicador_entity_1 = require("../indicador/indicador.entity");
 const parametro_controller_1 = require("./parametro.controller");
 const parametro_entity_1 = require("./parametro.entity");
 const parametro_service_1 = require("./parametro.service");
@@ -18,7 +19,7 @@ ParametroModule = __decorate([
     (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forFeature([
-                parametro_entity_1.Parametro,
+                parametro_entity_1.Parametro, indicador_entity_1.Indicador
             ]),
         ],
         controllers: [parametro_controller_1.ParametroController],

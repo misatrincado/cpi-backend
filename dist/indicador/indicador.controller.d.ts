@@ -1,4 +1,5 @@
 import { CreateIndicadoraDto } from './dto/create.dto';
+import { UpdateIndicadoraDto } from './dto/update.dto';
 import { IndicadorService } from './indicador.service';
 export declare class IndicadorController {
     private readonly indicadorService;
@@ -8,5 +9,8 @@ export declare class IndicadorController {
     }>;
     create(dto: CreateIndicadoraDto): Promise<{
         data: import("./indicador.entity").Indicador;
+    }>;
+    update(dto: UpdateIndicadoraDto): Promise<{
+        data: import("./indicador.entity").Indicador & UpdateIndicadoraDto;
     }>;
 }

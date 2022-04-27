@@ -16,6 +16,7 @@ exports.SubambitoController = void 0;
 const common_1 = require("@nestjs/common");
 const createEmpresa_dto_1 = require("../empresa/dto/createEmpresa.dto");
 const createSubambito_dto_1 = require("./dto/createSubambito.dto");
+const update_dto_1 = require("./dto/update.dto");
 const subambito_service_1 = require("./subambito.service");
 let SubambitoController = class SubambitoController {
     constructor(subAmbitoService) {
@@ -25,8 +26,16 @@ let SubambitoController = class SubambitoController {
         const data = await this.subAmbitoService.findByAmbito(id);
         return { data };
     }
+    async obtainWithParamsIndica(idAmbito) {
+        const data = await this.subAmbitoService.obtainWithParamsIndica(idAmbito);
+        return { data };
+    }
     async create(dto) {
         const data = await this.subAmbitoService.create(dto);
+        return { data };
+    }
+    async update(dto) {
+        const data = await this.subAmbitoService.update(dto);
         return { data };
     }
 };
@@ -38,12 +47,26 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SubambitoController.prototype, "findByAmbito", null);
 __decorate([
+    (0, common_1.Get)('/parametros/indicadores/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SubambitoController.prototype, "obtainWithParamsIndica", null);
+__decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [createSubambito_dto_1.CreateSubambitoDto]),
     __metadata("design:returntype", Promise)
 ], SubambitoController.prototype, "create", null);
+__decorate([
+    (0, common_1.Post)('update'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_dto_1.UpdateSubambitoDto]),
+    __metadata("design:returntype", Promise)
+], SubambitoController.prototype, "update", null);
 SubambitoController = __decorate([
     (0, common_1.Controller)('subambito'),
     __metadata("design:paramtypes", [subambito_service_1.SubambitoService])

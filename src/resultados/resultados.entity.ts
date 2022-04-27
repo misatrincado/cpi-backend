@@ -9,7 +9,7 @@ export class Resultados {
     id: number;
 
     @ManyToOne(() => Indicador, (e) => e)
-    @JoinColumn({name: 'idEmpresa'})
+    @JoinColumn({name: 'idIndicador'})
     indicador: number;
     
     @ManyToOne(() => Calificacion, (e) => e)

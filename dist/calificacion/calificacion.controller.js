@@ -20,8 +20,9 @@ let CalificacionController = class CalificacionController {
     constructor(calificacionService) {
         this.calificacionService = calificacionService;
     }
-    async findAll() {
-        return this.calificacionService.findAll();
+    async findByProyecto(id) {
+        const data = await this.calificacionService.findByProyecto(id);
+        return { data };
     }
     async create(dto) {
         const data = await this.calificacionService.create(dto);
@@ -29,11 +30,12 @@ let CalificacionController = class CalificacionController {
     }
 };
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('/:id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], CalificacionController.prototype, "findAll", null);
+], CalificacionController.prototype, "findByProyecto", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),

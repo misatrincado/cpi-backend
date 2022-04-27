@@ -30,6 +30,10 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Ambito.prototype, "activo", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Ambito.prototype, "color", void 0);
+__decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", String)
 ], Ambito.prototype, "created", void 0);

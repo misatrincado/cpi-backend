@@ -10,7 +10,7 @@ export class Calificacion {
     @JoinColumn({name: 'idProyecto'})
     proyecto: number;
 
-    @Column()
+    @Column({type: 'datetime'})
     fechaCalificacion: string;
     
     @Column()

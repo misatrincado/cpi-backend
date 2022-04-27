@@ -14,6 +14,9 @@ export class Ambito {
     @Column()
     activo: boolean;
    
+    @Column({nullable: true})
+    color: string;
+   
     @CreateDateColumn()
     created: string;
 }

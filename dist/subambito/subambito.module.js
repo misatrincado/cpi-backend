@@ -9,6 +9,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SubambitoModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const indicador_entity_1 = require("../indicador/indicador.entity");
+const parametro_entity_1 = require("../parametro/parametro.entity");
 const subambito_controller_1 = require("./subambito.controller");
 const subambito_entity_1 = require("./subambito.entity");
 const subambito_service_1 = require("./subambito.service");
@@ -18,7 +20,7 @@ SubambitoModule = __decorate([
     (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forFeature([
-                subambito_entity_1.Subambito,
+                subambito_entity_1.Subambito, parametro_entity_1.Parametro, indicador_entity_1.Indicador
             ]),
         ],
         controllers: [subambito_controller_1.SubambitoController],

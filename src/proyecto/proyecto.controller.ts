@@ -8,7 +8,8 @@ export class ProyectoController {
 
     @Get()
     async findAll() {
-        return this.proyectoService.findAll();
+        const data = await this.proyectoService.findAll();
+        return {data}
     }
 
     @Post()

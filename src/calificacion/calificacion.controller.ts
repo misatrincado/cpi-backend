@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CalificacionService } from './calificacion.service';
 import { CreateCalificacionDto } from './dto/create.dto';
 
@@ -6,9 +6,10 @@ import { CreateCalificacionDto } from './dto/create.dto';
 export class CalificacionController {
     constructor(private readonly calificacionService: CalificacionService) {}
 
-    @Get()
-    async findAll() {
-        return this.calificacionService.findAll();
+    @Get('/:id')
+    async findByProyecto(@Param('id') id: string) {
+        const data = await this.calificacionService.findByProyecto(id);
+        return {data}
     }
 
     @Post()

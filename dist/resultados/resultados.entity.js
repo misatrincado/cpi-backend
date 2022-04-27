@@ -22,7 +22,7 @@ __decorate([
 ], Resultados.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => indicador_entity_1.Indicador, (e) => e),
-    (0, typeorm_1.JoinColumn)({ name: 'idEmpresa' }),
+    (0, typeorm_1.JoinColumn)({ name: 'idIndicador' }),
     __metadata("design:type", Number)
 ], Resultados.prototype, "indicador", void 0);
 __decorate([

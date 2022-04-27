@@ -4,6 +4,6 @@ import { CreateCalificacionDto } from './dto/create.dto';
 export declare class CalificacionService {
     private readonly calificacionRepository;
     constructor(calificacionRepository: Repository<Calificacion>);
-    findAll(): Promise<Calificacion[]>;
+    findByProyecto(id: string): Promise<Calificacion[]>;
     create(dto: CreateCalificacionDto): Promise<Calificacion>;
 }

@@ -9,8 +9,4 @@ export class CreateCalificacionDto {
 
   @IsNotEmpty()
   vigente: boolean;
-
-  @IsNotEmpty()
-  urlCalificacion: string;
-
 }
