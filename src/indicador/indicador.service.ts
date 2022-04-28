@@ -14,12 +14,14 @@ export class IndicadorService {
 
     async findByParametro(id: string) {
         const getAll = await this.inidicadorRepository.find({
-            where: { parametro: id }
+            where: { parametro: id },
+            relations: ['tipologia']
         })
         return getAll
     }
     async create(dto: CreateIndicadoraDto) {
         const elem = new Indicador()
+        elem.tipologia = dto.idTipologia
         elem.parametro = dto.idParametro
         elem.nombre = dto.nombre
         elem.desc = dto.desc
@@ -33,8 +35,9 @@ export class IndicadorService {
     }
 
     async update(dto: UpdateIndicadoraDto) {
+        console.log("dto",dto)
         const find = await this.inidicadorRepository.findOne({
-            id: dto.id
+            id: dto.id,
         })
         if(find) {
           const update = Object.assign(find, dto)

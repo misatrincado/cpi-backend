@@ -2,6 +2,9 @@ import { IsNotEmpty } from 'class-validator';
 
 export class CreateIndicadoraDto {
   @IsNotEmpty()
+  idTipologia: number;
+
+  @IsNotEmpty()
   idParametro: number;
 
   @IsNotEmpty()

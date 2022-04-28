@@ -20,7 +20,7 @@ export class SubambitoService {
 
     async findByAmbito(id: string) {
         const getAll = await this.subambitoRepository.find({
-            where: { ambito: id }
+            where: { ambito: id },
         })
         return getAll
     }
@@ -29,7 +29,8 @@ export class SubambitoService {
         const getSubambito = await this.subambitoRepository.find({
             where: {
                 ambito: idAmbito
-            }
+            },
+            relations: ['ambito']
         })
         const send = await Promise.all(
             getSubambito.map(async itemSub => {

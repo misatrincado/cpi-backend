@@ -12,5 +12,7 @@ export class UpdateIndicadoraDto {
 
   escala?: string;
 
+  tipologia?: string;
+  
   activo?: boolean;
 }

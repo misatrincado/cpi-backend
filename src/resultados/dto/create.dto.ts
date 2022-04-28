@@ -1,6 +1,8 @@
 import { IsNotEmpty } from 'class-validator';
 
 export class CreateResultadosDto {
+  id: number
+
   @IsNotEmpty()
   idIndicador: number
 

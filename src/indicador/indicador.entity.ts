@@ -1,4 +1,5 @@
 import { Parametro } from 'src/parametro/parametro.entity';
+import { Tipologia } from 'src/tipologia/tipologia.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity()
@@ -9,6 +10,11 @@ export class Indicador {
     @ManyToOne(() => Parametro, (e) => e)
     @JoinColumn({name: 'idParametro'})
     parametro: number;
+
+
+    @ManyToOne(() => Tipologia, (e) => e)
+    @JoinColumn({name: 'idTipologia'})
+    tipologia: number;
 
     @Column()
     nombre: string;

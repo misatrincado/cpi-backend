@@ -8,11 +8,26 @@ import { Proyecto } from './proyecto.entity';
 export class ProyectoService {
     constructor(
         @InjectRepository(Proyecto)
-        private readonly empresaRepository: Repository<Proyecto>,
+        private readonly proyectoRepository: Repository<Proyecto>,
     ) { }
 
     async findAll() {
-        const getAll = await this.empresaRepository.find()
+        const getAll = await this.proyectoRepository.find()
+        return getAll
+    }
+
+    async findOne(id: string) {
+        const getAll = await this.proyectoRepository.findOne({
+            where: {id},
+            relations: ['tipologia']
+        })
+        return getAll
+    }
+
+    async findByEmpresa(id: string) {
+        const getAll = await this.proyectoRepository.find({
+            where: { empresa: id }
+        })
         return getAll
     }
     async create(dto: CreateProyectoDto) {
@@ -25,6 +40,6 @@ export class ProyectoService {
         elem.imagen = dto.imagen
         elem.direccion = dto.direccion
         elem.tipologia = dto.idTipologia
-        return this.empresaRepository.save(elem)
+        return this.proyectoRepository.save(elem)
     }
 }

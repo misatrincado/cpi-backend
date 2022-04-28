@@ -1,10 +1,16 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateResultadosDto } from './dto/create.dto';
 import { ResultadosService } from './resultados.service';
 
 @Controller('resultados')
 export class ResultadosController {
     constructor(private readonly resultadosService: ResultadosService) {}
+
+    @Get('/:id')
+    async findByCalificacion(@Param('id') id) {
+        const data = await this.resultadosService.findByCalificacion(id);
+        return {data}
+    }
 
     @Post()
     async create(@Body() dto: CreateResultadosDto) {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateProyectoDto } from './dto/create.dto';
 import { ProyectoService } from './proyecto.service';
 
@@ -9,6 +9,18 @@ export class ProyectoController {
     @Get()
     async findAll() {
         const data = await this.proyectoService.findAll();
+        return {data}
+    }
+
+    @Get('/:id')
+    async findOne(@Param('id') id: string) {
+        const data = await this.proyectoService.findOne(id);
+        return {data}
+    }
+
+    @Get('/empresa/:id')
+    async findByEmpresa(@Param('id') id: string) {
+        const data = await this.proyectoService.findByEmpresa(id);
         return {data}
     }
 
