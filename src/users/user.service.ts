@@ -30,35 +30,17 @@ export class UserService {
  
   async create(dto: CreateUserDto) {
     const { email, password } = dto;
-    const qb = await getRepository(Users)
-      .createQueryBuilder('user')
-      .where('user.email = :email', { email });
-
-    const user = await qb.getOne();
+    const user = await this.userRepository.findOne({email})
 
     if (user) {
       return { error: 'El correo ya existe' };
     }
-
-    // create new user
     const newUser = new Users();
     newUser.email = email;
     newUser.password = password;
-    newUser.created = new Date().toString();
-
-    const errors = await validate(newUser);
-    if (errors.length > 0) {
-      throw new HttpException(
-        { message: 'Input data validation failed' },
-        HttpStatus.BAD_REQUEST,
-      );
-    } else {
-      return {
-        data: {
-          ...dto,
-          created: newUser.created
-        },
-      };
+    const saveUser = this.userRepository.save(newUser)
+    return {
+      data: saveUser
     }
   }
 }

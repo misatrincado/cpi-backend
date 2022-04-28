@@ -16,7 +16,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('login')
-  async login(@Body('user') loginUserDto: LoginUserDto): Promise<UserRO> {
+  async login(@Body() loginUserDto: LoginUserDto): Promise<UserRO> {
+    console.log("loginUserDto",loginUserDto)
     const user = await this.userService.findOne(loginUserDto);
 
     if (!user) {
@@ -27,9 +28,9 @@ export class UserController {
     return { user }
   }
 
-  @UsePipes(new ValidationPipe())
   @Post()
-  async create(@Body('user') userData: CreateUserDto) {
+  async create(@Body() userData: CreateUserDto) {
+    console.log("userData",userData)
     const response = await this.userService.create(userData);
     return response;
   }
