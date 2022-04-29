@@ -20,11 +20,11 @@ const DB_QA = {
 };
 const DB_PROD = {
   DB: {
-    host: '186.64.118.100',
-    username: 'cpinmobi_admin',
-    password: 'cpinombiliario2022',
-    database: 'cpinmobi_prod',
-    port: 2083,
+    host: 'localhost',
+    username: 'root',
+    password: 'cpinombiliario',
+    database: 'cpi',
+    port: 3306,
   },
 };
 
