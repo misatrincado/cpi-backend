@@ -22,7 +22,7 @@ const DB_PROD = {
   DB: {
     host: 'localhost',
     username: 'root',
-    password: 'cpi2022',
+    password: '',
     database: 'cpi',
     port: 3306,
   },
