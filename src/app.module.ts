@@ -13,6 +13,7 @@ import { AmbitoModule } from './ambito/ambito.module';
 import { SubambitoModule } from './subambito/subambito.module';
 import { ParametroModule } from './parametro/parametro.module';
 import { TipologiaModule } from './tipologia/tipologia.module';
+import { ComunaModule } from './comuna/comuna.module';
 import config from './config';
 
 @Module({
@@ -39,6 +40,7 @@ import config from './config';
     SubambitoModule,
     ParametroModule,
     TipologiaModule,
+    ComunaModule,
   ],
   controllers: [AppController, EmpresaController],
   providers: [],
