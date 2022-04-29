@@ -1,4 +1,4 @@
-export const ENV: 'development' | 'qa' | 'production' = 'development';
+export const ENV: 'development' | 'qa' | 'production' = 'production';
 
 const DB_DEV = {
   DB: {
@@ -20,10 +20,10 @@ const DB_QA = {
 };
 const DB_PROD = {
   DB: {
-    host: '',
-    username: '',
-    password: '',
-    database: '',
+    host: '186.64.118.100',
+    username: 'cpinmobi_admin',
+    password: 'cpinombiliario2022',
+    database: 'cpinmobi_prod',
     port: 1433,
   },
 };
