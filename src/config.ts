@@ -24,7 +24,7 @@ const DB_PROD = {
     username: 'cpinmobi_admin',
     password: 'cpinombiliario2022',
     database: 'cpinmobi_prod',
-    port: 1433,
+    port: 2083,
   },
 };
 
