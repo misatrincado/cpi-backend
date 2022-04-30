@@ -25,7 +25,9 @@ export class Indicador {
     @Column()
     unidad: string;
     
-    @Column()
+    @Column({
+        length: 1000
+    })
     escala: string;
     
     @Column()
