@@ -20,7 +20,7 @@ import config from './config';
   imports: [
     TypeOrmModule.forRootAsync({
       useFactory: async () => ({
-        type: 'mysql',
+        type: 'mssql',
         host: config.DB.host,
         port: config.DB.port,
         username: config.DB.username,

@@ -1,4 +1,4 @@
-export const ENV: 'development' | 'qa' | 'production' = 'production';
+export const ENV: 'development' | 'qa' | 'production' = 'development';
 
 const DB_DEV = {
   DB: {
@@ -28,7 +28,9 @@ const DB_PROD = {
   },
 };
 
-const ALL = {};
+const ALL = {
+  ENV
+};
 
 function handleSend() {
   switch (ENV) {

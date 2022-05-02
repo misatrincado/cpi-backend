@@ -12,6 +12,12 @@ export class ResultadosController {
         return {data}
     }
 
+    @Get('/averages/:id')
+    async obtainAverages(@Param('id') idCalificacion) {
+        const data = await this.resultadosService.obtainAverages(idCalificacion);
+        return {data}
+    }
+
     @Post()
     async create(@Body() dto: CreateResultadosDto) {
         const data = await this.resultadosService.create(dto);
