@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Ambito } from 'src/ambito/ambito.entity';
-import { Calificacion } from 'src/calificacion/calificacion.entity';
+import { Indicador } from 'src/indicador/indicador.entity';
 import { Parametro } from 'src/parametro/parametro.entity';
 import { Subambito } from 'src/subambito/subambito.entity';
 import { Repository } from 'typeorm';
@@ -20,8 +20,8 @@ export class ResultadosService {
         private readonly ambitoRepository: Repository<Ambito>,
         @InjectRepository(Parametro)
         private readonly parametroRepository: Repository<Parametro>,
-        @InjectRepository(Calificacion)
-        private readonly calificacionRepository: Repository<Calificacion>,
+        @InjectRepository(Indicador)
+        private readonly indicadorRepository: Repository<Indicador>,
     ) { }
 
     async findByCalificacion(id: string) {
@@ -30,7 +30,7 @@ export class ResultadosService {
             relations: ['indicador', 'indicador.parametro']
         })
 
-        const send = getAll.map((item:any) => {
+        const send = getAll.map((item: any) => {
             return {
                 ...item,
                 idIndicador: item.indicador.id,
@@ -61,10 +61,29 @@ export class ResultadosService {
                 })
                 const calculo = promedioAmbito(listResults, listSubambito, listParametros)
                 const indicadoresRellenos = obtainIndicatorsFilled(listResults, listSubambito, listParametros)
+
+                let qty = 0
+                listSubambito.map(async itemSub => {
+                    const parametros = listParametros.filter((i:any) => i.subambito.id === itemSub.id)
+                    Promise.all(
+                        parametros.map(async itemParam => {
+                            const qtyIndicadores = await this.indicadorRepository.find({
+                                where: {
+                                    parametros: itemParam
+                                }
+                            })
+                            qty += qtyIndicadores.length
+                        })
+                    )
+                })
+
                 return {
                     ...item,
                     amount: calculo,
-                    indicadoresLength: indicadoresRellenos,
+                    indicadoresLength: {
+                        amount: indicadoresRellenos,
+                        qty
+                    },
                 }
             })
         )
