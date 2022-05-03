@@ -7,9 +7,12 @@ import { IndicadorService } from './indicador.service';
 export class IndicadorController {
     constructor(private readonly indicadorService: IndicadorService) {}
 
-    @Get('/:id')
-    async findByParametro(@Param('id') id: string) {
-        const data = await this.indicadorService.findByParametro(id);
+    @Get('/:idParam/:idTipo')
+    async findByParametroTipo(
+        @Param('idParam') idParam: string, 
+        @Param('idTipo') idTipo: string
+    ) {
+        const data = await this.indicadorService.findByParametroTipo(idParam, idTipo) ;
         return {data}
     }
 

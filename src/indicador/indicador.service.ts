@@ -12,9 +12,9 @@ export class IndicadorService {
         private readonly inidicadorRepository: Repository<Indicador>,
     ) { }
 
-    async findByParametro(id: string) {
+    async findByParametroTipo(idParam: string, idTipo: string) {
         const getAll = await this.inidicadorRepository.find({
-            where: { parametro: id },
+            where: { parametro: idParam, tipologia: idTipo },
             relations: ['tipologia']
         })
         return getAll
