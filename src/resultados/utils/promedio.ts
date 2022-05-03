@@ -44,5 +44,22 @@ export const obtainIndicatorsFilled = (listResults, listSubambito, listParametro
             amount += promedio.length
         })
     })
-    return { amount, qty }
+    return amount
 }
+
+export const obtainIndicatorsQty = (listSubambito, listParametros, listIndicadores) => {
+    return listSubambito.reduce((acc: any, itemSub) => {
+        if (!acc) {
+            acc = 0
+        }
+        const parametroFilter = listParametros.filter((param: any) => param.subambito.id === itemSub.id)
+        const parametro = parametroFilter.reduce((accP: any, item) => {
+            if (!accP) {
+                accP = 0
+            }
+            const indicadores = listIndicadores.filter((indicador: any) => indicador.parametro.id === item.id)
+            return accP += indicadores.length
+        }, 0)
+        return acc += parametro
+    }, 0)
+}   

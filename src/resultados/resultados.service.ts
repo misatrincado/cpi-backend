@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Ambito } from 'src/ambito/ambito.entity';
 import { Calificacion } from 'src/calificacion/calificacion.entity';
+import { Indicador } from 'src/indicador/indicador.entity';
 import { Parametro } from 'src/parametro/parametro.entity';
 import { Subambito } from 'src/subambito/subambito.entity';
 import { Repository } from 'typeorm';
 import { CreateResultadosDto } from './dto/create.dto';
 import { Resultados } from './resultados.entity';
-import { obtainIndicatorsFilled, promedioAmbito } from './utils/promedio';
+import { obtainIndicatorsFilled, obtainIndicatorsQty, promedioAmbito } from './utils/promedio';
 
 @Injectable()
 export class ResultadosService {
@@ -20,6 +21,8 @@ export class ResultadosService {
         private readonly ambitoRepository: Repository<Ambito>,
         @InjectRepository(Parametro)
         private readonly parametroRepository: Repository<Parametro>,
+        @InjectRepository(Indicador)
+        private readonly indicadorRepository: Repository<Indicador>,
         @InjectRepository(Calificacion)
         private readonly calificacionRepository: Repository<Calificacion>,
     ) { }
@@ -30,7 +33,7 @@ export class ResultadosService {
             relations: ['indicador', 'indicador.parametro']
         })
 
-        const send = getAll.map((item:any) => {
+        const send = getAll.map((item: any) => {
             return {
                 ...item,
                 idIndicador: item.indicador.id,
@@ -42,6 +45,10 @@ export class ResultadosService {
     }
 
     async obtainAverages(idCalification: string) {
+        const calificacion: any = await this.calificacionRepository.findOne({
+            where: { id: idCalification },
+            relations: ['proyecto', 'proyecto.tipologia']
+        })
         const listResults = await this.resultadosRepository.find({
             where: { calificacion: idCalification },
             relations: ['indicador', 'indicador.parametro']
@@ -59,12 +66,23 @@ export class ResultadosService {
                 const listParametros = await this.parametroRepository.find({
                     relations: ['subambito']
                 })
+                const listIndicadores = await this.indicadorRepository.find({
+                    where: {
+                        tipologia: calificacion.proyecto.tipologia.id,
+                    },
+                    relations: ['parametro']
+                })
                 const calculo = promedioAmbito(listResults, listSubambito, listParametros)
                 const indicadoresRellenos = obtainIndicatorsFilled(listResults, listSubambito, listParametros)
+                const qty = obtainIndicatorsQty(listSubambito, listParametros, listIndicadores)
+
                 return {
                     ...item,
                     amount: calculo,
-                    indicadoresLength: indicadoresRellenos,
+                    indicadoresLength: {
+                        amount: indicadoresRellenos,
+                        qty
+                    },
                 }
             })
         )
@@ -86,19 +104,19 @@ export class ResultadosService {
             dto.map(async item => {
                 console.log("item", item)
                 const elem = new Resultados()
-    
-                if(!item.id) {
+
+                if (!item.id) {
                     const finder = await this.resultadosRepository.findOne({
                         indicador: item.idIndicador,
                         calificacion: item.idCalificacion
                     })
-                    if(finder) {
+                    if (finder) {
                         elem.id = finder.id
                     }
                 } else {
                     elem.id = item.id
                 }
-    
+
                 elem.indicador = item.idIndicador
                 elem.calificacion = item.idCalificacion
                 elem.valor = item.valor
