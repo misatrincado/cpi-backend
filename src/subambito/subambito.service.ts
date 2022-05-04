@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Ambito } from 'src/ambito/ambito.entity';
 import { Indicador } from 'src/indicador/indicador.entity';
 import { Parametro } from 'src/parametro/parametro.entity';
 import { Repository } from 'typeorm';
@@ -16,6 +17,8 @@ export class SubambitoService {
         private readonly parametroRepository: Repository<Parametro>,
         @InjectRepository(Indicador)
         private readonly indicadorRepository: Repository<Indicador>,
+        @InjectRepository(Ambito)
+        private readonly ambitoRepository: Repository<Ambito>,
     ) { }
 
     async findByAmbito(id: string) {
@@ -25,7 +28,20 @@ export class SubambitoService {
         return getAll
     }
 
-    async obtainWithParamsIndica(idAmbito: string, idTipo: string) {
+    async obtainFromAmbito(idTipo: string) {
+        const getAmbito = await this.ambitoRepository.find()
+        const send = await Promise.all(
+            getAmbito.map(async itemAmbito => {
+                const obtain = await this.obtainWithParamsIndica(itemAmbito.id, idTipo)
+                return {
+                    ...itemAmbito,
+                    subambitos: obtain
+                }
+            })
+        )
+        return send
+    }
+    async obtainWithParamsIndica(idAmbito: number, idTipo: string) {
         const getSubambito = await this.subambitoRepository.find({
             where: {
                 ambito: idAmbito

@@ -16,6 +16,11 @@ export class CalificacionController {
         const data = await this.calificacionService.findById(id);
         return {data}
     }
+    @Get('/publicar/:id')
+    async publicar(@Param('id') id: string) {
+        const data = await this.calificacionService.publicar(id);
+        return {data}
+    }
 
     @Post()
     async create(@Body() dto: CreateCalificacionDto) {
