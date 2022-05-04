@@ -26,7 +26,8 @@ export class ProyectoService {
 
     async findByEmpresa(id: string) {
         const getAll = await this.proyectoRepository.find({
-            where: { empresa: id }
+            where: { empresa: id },
+            relations: ['tipologia']
         })
         return getAll
     }

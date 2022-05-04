@@ -20,7 +20,6 @@ export class EmpresaService {
         empresa.nombre = dto.name
         empresa.rut = dto.rut
         const res = await this.empresaRepository.save(empresa)
-        console.log("res",res)
         return res
     }
 }

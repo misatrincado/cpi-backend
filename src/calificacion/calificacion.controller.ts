@@ -7,8 +7,13 @@ export class CalificacionController {
     constructor(private readonly calificacionService: CalificacionService) {}
 
     @Get('/:id')
-    async findByProyecto(@Param('id') id: string) {
-        const data = await this.calificacionService.findByProyecto(id);
+    async findByProyecto(@Param('id') idProyecto: string) {
+        const data = await this.calificacionService.findByProyecto(idProyecto);
+        return {data}
+    }
+    @Get('/id/:id')
+    async findById(@Param('id') id: string) {
+        const data = await this.calificacionService.findById(id);
         return {data}
     }
 

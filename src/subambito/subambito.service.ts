@@ -25,7 +25,7 @@ export class SubambitoService {
         return getAll
     }
 
-    async obtainWithParamsIndica(idAmbito: string) {
+    async obtainWithParamsIndica(idAmbito: string, idTipo: string) {
         const getSubambito = await this.subambitoRepository.find({
             where: {
                 ambito: idAmbito
@@ -41,9 +41,8 @@ export class SubambitoService {
                 const parametros = await Promise.all(
                     getParametros.map(async itemParam => {
                         const getIndicadores = await this.indicadorRepository.find({
-                            where: { parametro: itemParam.id }
+                            where: { parametro: itemParam.id, tipologia: idTipo }
                         })
-                        console.log("getIndicadores",getIndicadores)
                         return {
                             ...itemParam,
                             indicadores: getIndicadores
@@ -67,7 +66,6 @@ export class SubambitoService {
         elem.activo = dto.activo
 
         const res = await this.subambitoRepository.save(elem)
-        console.log("res create Subambito", res)
         return res
     }
 

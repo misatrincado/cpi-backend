@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Ambito } from 'src/ambito/ambito.entity';
+import { Calificacion } from 'src/calificacion/calificacion.entity';
 import { Indicador } from 'src/indicador/indicador.entity';
 import { Parametro } from 'src/parametro/parametro.entity';
 import { Subambito } from 'src/subambito/subambito.entity';
 import { Repository } from 'typeorm';
 import { CreateResultadosDto } from './dto/create.dto';
 import { Resultados } from './resultados.entity';
-import { obtainIndicatorsFilled, promedioAmbito } from './utils/promedio';
+import { obtainIndicatorsFilled, obtainIndicatorsQty, promedioAmbito, promedioSubambito } from './utils/promedio';
 
 @Injectable()
 export class ResultadosService {
@@ -22,6 +23,8 @@ export class ResultadosService {
         private readonly parametroRepository: Repository<Parametro>,
         @InjectRepository(Indicador)
         private readonly indicadorRepository: Repository<Indicador>,
+        @InjectRepository(Calificacion)
+        private readonly calificacionRepository: Repository<Calificacion>,
     ) { }
 
     async findByCalificacion(id: string) {
@@ -42,6 +45,10 @@ export class ResultadosService {
     }
 
     async obtainAverages(idCalification: string) {
+        const calificacion: any = await this.calificacionRepository.findOne({
+            where: { id: idCalification },
+            relations: ['proyecto', 'proyecto.tipologia']
+        })
         const listResults = await this.resultadosRepository.find({
             where: { calificacion: idCalification },
             relations: ['indicador', 'indicador.parametro']
@@ -59,27 +66,22 @@ export class ResultadosService {
                 const listParametros = await this.parametroRepository.find({
                     relations: ['subambito']
                 })
+                const listIndicadores = await this.indicadorRepository.find({
+                    where: {
+                        tipologia: calificacion.proyecto.tipologia.id,
+                    },
+                    relations: ['parametro']
+                })
                 const calculo = promedioAmbito(listResults, listSubambito, listParametros)
                 const indicadoresRellenos = obtainIndicatorsFilled(listResults, listSubambito, listParametros)
-
-                let qty = 0
-                listSubambito.map(async itemSub => {
-                    const parametros = listParametros.filter((i:any) => i.subambito.id === itemSub.id)
-                    Promise.all(
-                        parametros.map(async itemParam => {
-                            const qtyIndicadores = await this.indicadorRepository.find({
-                                where: {
-                                    parametros: itemParam
-                                }
-                            })
-                            qty += qtyIndicadores.length
-                        })
-                    )
-                })
-
+                const qty = obtainIndicatorsQty(listSubambito, listParametros, listIndicadores)
+                const subambitoAverages = listSubambito.map(itemSub => ({
+                    amount: promedioSubambito(listResults, listParametros, itemSub.id)
+                }))
                 return {
                     ...item,
                     amount: calculo,
+                    subambito: subambitoAverages,
                     indicadoresLength: {
                         amount: indicadoresRellenos,
                         qty
@@ -103,21 +105,20 @@ export class ResultadosService {
     async createMany(dto: CreateResultadosDto[]) {
         const elems = await Promise.all(
             dto.map(async item => {
-                console.log("item", item)
                 const elem = new Resultados()
-    
-                if(!item.id) {
+
+                if (!item.id) {
                     const finder = await this.resultadosRepository.findOne({
                         indicador: item.idIndicador,
                         calificacion: item.idCalificacion
                     })
-                    if(finder) {
+                    if (finder) {
                         elem.id = finder.id
                     }
                 } else {
                     elem.id = item.id
                 }
-    
+
                 elem.indicador = item.idIndicador
                 elem.calificacion = item.idCalificacion
                 elem.valor = item.valor

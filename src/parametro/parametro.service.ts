@@ -44,7 +44,6 @@ export class ParametroService {
                 }
             })
         )
-            console.log("send",send)
         return send
     }
     async create(dto: CreateParametroDto) {
@@ -55,7 +54,6 @@ export class ParametroService {
         elem.activo = dto.activo
 
         const res = await this.parametroRepository.save(elem)
-        console.log("res create Parametro", res)
         return res
     }
 

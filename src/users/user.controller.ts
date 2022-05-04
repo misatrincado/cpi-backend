@@ -17,7 +17,6 @@ export class UserController {
 
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto): Promise<UserRO> {
-    console.log("loginUserDto",loginUserDto)
     const user = await this.userService.findOne(loginUserDto);
 
     if (!user) {
@@ -30,7 +29,6 @@ export class UserController {
 
   @Post()
   async create(@Body() userData: CreateUserDto) {
-    console.log("userData",userData)
     const response = await this.userService.create(userData);
     return response;
   }
