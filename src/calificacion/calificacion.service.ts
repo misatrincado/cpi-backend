@@ -25,8 +25,11 @@ export class CalificacionService {
         })
         return getAll
     }
-    async allDespublicar(idTipologia: number) {
+    async allDespublicar(idProyecto:number, idTipologia: number) {
         let elem:any = await this.calificacionRepository.find({
+            where: {
+                proyecto: idProyecto
+            },
             relations: ['proyecto', 'proyecto.tipologia'],
         })
         elem.filter(i => i.proyecto.tipologia.id === idTipologia)
@@ -40,7 +43,7 @@ export class CalificacionService {
             where: { id: id },
             relations: ['proyecto', 'proyecto.tipologia']
         })
-        await this.allDespublicar(elem.proyecto.tipologia.id)
+        await this.allDespublicar(elem.proyecto.id, elem.proyecto.tipologia.id)
         elem.vigente = true
         return this.calificacionRepository.save(elem)
     }
