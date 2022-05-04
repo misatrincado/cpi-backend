@@ -25,6 +25,25 @@ export class CalificacionService {
         })
         return getAll
     }
+    async allDespublicar(idTipologia: number) {
+        let elem:any = await this.calificacionRepository.find({
+            relations: ['proyecto', 'proyecto.tipologia'],
+        })
+        elem.filter(i => i.proyecto.tipologia.id === idTipologia)
+        elem.map(element => {
+            element.vigente = false
+            this.calificacionRepository.save(element)
+        })
+    }
+    async publicar(id: string) {
+        let elem:any = await this.calificacionRepository.findOne({
+            where: { id: id },
+            relations: ['proyecto', 'proyecto.tipologia']
+        })
+        await this.allDespublicar(elem.proyecto.tipologia.id)
+        elem.vigente = true
+        return this.calificacionRepository.save(elem)
+    }
     async create(dto: CreateCalificacionDto) {
         const elem = new Calificacion()
         elem.proyecto = dto.idProyecto
