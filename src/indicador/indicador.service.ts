@@ -30,12 +30,10 @@ export class IndicadorService {
         elem.activo = dto.activo
 
         const res = await this.inidicadorRepository.save(elem)
-        console.log("res create Indicador", res)
         return res
     }
 
     async update(dto: UpdateIndicadoraDto) {
-        console.log("dto",dto)
         const find = await this.inidicadorRepository.findOne({
             id: dto.id,
         })

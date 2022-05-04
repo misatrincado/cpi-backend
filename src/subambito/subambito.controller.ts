@@ -14,9 +14,12 @@ export class SubambitoController {
         return {data}
     }
 
-    @Get('/parametros/indicadores/:id')
-    async obtainWithParamsIndica(@Param('id') idAmbito: string) {
-        const data = await this.subAmbitoService.obtainWithParamsIndica(idAmbito);
+    @Get('/parametros/indicadores/:idAmbito/:idTipo')
+    async obtainWithParamsIndica(
+        @Param('idAmbito') idAmbito: string,
+        @Param('idTipo') idTipo: string
+        ) {
+        const data = await this.subAmbitoService.obtainWithParamsIndica(idAmbito, idTipo);
         return {data}
     }
 

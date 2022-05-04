@@ -2,7 +2,7 @@ export const promedioParametro = (listResults, idParametro) => {
     // eslint-disable-next-line max-len
     let value = 0
     const promedioFilter = listResults.filter(i => i.indicador.parametro.id === idParametro)
-    const promedio = promedioFilter.filter(i => i.puntos)
+    const promedio = promedioFilter.filter(i => i.puntos > 0)
     promedio.map(i => {
         value += Number(i.puntos)
     })
@@ -14,23 +14,29 @@ export const promedioParametro = (listResults, idParametro) => {
 
 export const promedioSubambito = (listResults, listParametros, subambito) => {
     let calculo = 0
+    let length = 0
     const parametrosFilter = listParametros.filter(item => item.subambito.id === subambito.id)
     parametrosFilter.map(item => {
-        calculo += promedioParametro(listResults, item.id)
+        let promedio = promedioParametro(listResults, item.id)
+        if (promedio) {
+            calculo += promedio
+            length++
+        }
     })
-    return Math.round(calculo / parametrosFilter.length)
+    return Math.round(calculo / length)
 }
 
 export const promedioAmbito = (listResults, listSubambito, listParametros) => {
     let calculo = 0
+    let length = 0
     listSubambito.map(item => {
         let promedio = promedioSubambito(listResults, listParametros, item)
-        if (!promedio) {
-            promedio = 0
+        if (promedio) {
+            calculo += promedio
+            length++
         }
-        calculo += promedio
     })
-    return Math.round(calculo / listSubambito.length)
+    return Math.round(calculo / length)
 }
 
 export const obtainIndicatorsFilled = (listResults, listSubambito, listParametros) => {
@@ -38,9 +44,8 @@ export const obtainIndicatorsFilled = (listResults, listSubambito, listParametro
     let qty = 0
     listSubambito.map(itemSub => {
         return listParametros.filter(i => i.subambito.id === itemSub.id).map(itemParam => {
-            qty += listResults.length
             const promedioFilter = listResults.filter(i => i.indicador.parametro.id === itemParam.id)
-            const promedio = promedioFilter.filter(i => i.puntos)
+            const promedio = promedioFilter.filter(i => i.puntos > 0)
             amount += promedio.length
         })
     })

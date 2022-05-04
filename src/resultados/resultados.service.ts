@@ -8,7 +8,7 @@ import { Subambito } from 'src/subambito/subambito.entity';
 import { Repository } from 'typeorm';
 import { CreateResultadosDto } from './dto/create.dto';
 import { Resultados } from './resultados.entity';
-import { obtainIndicatorsFilled, obtainIndicatorsQty, promedioAmbito } from './utils/promedio';
+import { obtainIndicatorsFilled, obtainIndicatorsQty, promedioAmbito, promedioSubambito } from './utils/promedio';
 
 @Injectable()
 export class ResultadosService {
@@ -75,10 +75,13 @@ export class ResultadosService {
                 const calculo = promedioAmbito(listResults, listSubambito, listParametros)
                 const indicadoresRellenos = obtainIndicatorsFilled(listResults, listSubambito, listParametros)
                 const qty = obtainIndicatorsQty(listSubambito, listParametros, listIndicadores)
-
+                const subambitoAverages = listSubambito.map(itemSub => ({
+                    amount: promedioSubambito(listResults, listParametros, itemSub.id)
+                }))
                 return {
                     ...item,
                     amount: calculo,
+                    subambito: subambitoAverages,
                     indicadoresLength: {
                         amount: indicadoresRellenos,
                         qty
@@ -102,7 +105,6 @@ export class ResultadosService {
     async createMany(dto: CreateResultadosDto[]) {
         const elems = await Promise.all(
             dto.map(async item => {
-                console.log("item", item)
                 const elem = new Resultados()
 
                 if (!item.id) {

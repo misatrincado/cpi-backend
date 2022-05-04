@@ -13,7 +13,15 @@ export class CalificacionService {
 
     async findByProyecto(id: string) {
         const getAll = await this.calificacionRepository.find({
-            where: { proyecto: id }
+            where: { proyecto: id },
+            relations: ['proyecto', 'proyecto.tipologia']
+        })
+        return getAll
+    }
+    async findById(id: string) {
+        const getAll = await this.calificacionRepository.findOne({
+            where: { id: id },
+            relations: ['proyecto', 'proyecto.tipologia']
         })
         return getAll
     }
@@ -25,7 +33,6 @@ export class CalificacionService {
         elem.vigente = dto.vigente
         elem.urlCalificacion = ''
         const res = await this.calificacionRepository.save(elem)
-        console.log("res create calificacion", res)
         return res
     }
 }
