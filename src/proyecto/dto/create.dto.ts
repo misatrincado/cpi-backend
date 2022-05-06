@@ -11,7 +11,7 @@ export class CreateProyectoDto {
   readonly idEmpresa: number;
 
   @IsNotEmpty()
-  readonly comuna: string;
+  readonly idComuna: number;
   
   @IsNotEmpty()
   readonly url_proyecto: string;

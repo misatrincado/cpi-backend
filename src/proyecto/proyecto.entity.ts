@@ -1,3 +1,4 @@
+import { Comuna } from 'src/comuna/comuna.entity';
 import { Empresa } from 'src/empresa/empresa.entity';
 import { Tipologia } from 'src/tipologia/tipologia.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
@@ -17,8 +18,9 @@ export class Proyecto {
     @JoinColumn({name: 'idEmpresa'})
     empresa: number;
 
-    @Column()
-    comuna: string;
+    @ManyToOne(() => Comuna, (e) => e)
+    @JoinColumn({name: 'idComuna'})
+    comuna: number;
     
     @Column()
     url_proyecto: string;

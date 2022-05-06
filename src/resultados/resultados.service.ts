@@ -59,15 +59,20 @@ export class ResultadosService {
             listAmbito.map(async item => {
                 const listSubambito = await this.subambitoRepository.find({
                     where: {
-                        ambito: item.id
+                        ambito: item.id,
+                        activo: true
                     },
                     relations: ['ambito']
                 })
                 const listParametros = await this.parametroRepository.find({
+                    where: {
+                        activo: true
+                    },
                     relations: ['subambito']
                 })
                 const listIndicadores = await this.indicadorRepository.find({
                     where: {
+                        activo: true,
                         tipologia: calificacion.proyecto.tipologia.id,
                     },
                     relations: ['parametro']

@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { validate } from 'class-validator';
+import { UpdateUsersDto } from './dto/update.dto';
 
 @Injectable()
 export class UserService {
@@ -14,6 +15,13 @@ export class UserService {
     @InjectRepository(Users)
     private readonly userRepository: Repository<Users>,
   ) {}
+
+  async findAll() {
+    const getAll = await this.userRepository.find({
+      select: ['id', 'email', 'created'],
+    })
+    return getAll
+  }
 
   async findOne({ email, password }: LoginUserDto): Promise<Users> {
     const user = await this.userRepository.findOne({ email });
@@ -42,5 +50,21 @@ export class UserService {
     return {
       data: saveUser
     }
+  }
+
+  async update(dto: UpdateUsersDto) {
+    const find = await this.userRepository.findOne({
+        id: dto.id,
+    })
+    if(dto.password) {
+      dto.password = await argon2.hash(dto.password);
+    }
+
+    if(find) {
+      const update = Object.assign(find, dto)
+       const saveDto = await this.userRepository.save(update)
+       return saveDto;
+    }
+    return null
   }
 }
