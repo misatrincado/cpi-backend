@@ -3,17 +3,22 @@ import {
   Controller,
   Get,
   Post,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { LoginUserDto } from './dto/login-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRO } from './user.interface';
 import { UserService } from './user.service';
+import { UpdateUsersDto } from './dto/update.dto';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Get('all')
+  async findAll() {
+      const data = await this.userService.findAll();
+      return {data}
+  }
 
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto): Promise<UserRO> {
@@ -31,5 +36,11 @@ export class UserController {
   async create(@Body() userData: CreateUserDto) {
     const response = await this.userService.create(userData);
     return response;
+  }
+
+  @Post('update')
+  async update(@Body() dto: UpdateUsersDto) {
+      const data = await this.userService.update(dto);
+      return {data}
   }
 }

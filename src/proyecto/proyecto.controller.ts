@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateProyectoDto } from './dto/create.dto';
+import { UpdateProyectoDto } from './dto/update.dto';
 import { ProyectoService } from './proyecto.service';
 
 @Controller('proyecto')
@@ -27,6 +28,12 @@ export class ProyectoController {
     @Post()
     async create(@Body() dto: CreateProyectoDto) {
         const data = await this.proyectoService.create(dto);
+        return {data}
+    }
+
+    @Post('update')
+    async update(@Body() dto: UpdateProyectoDto) {
+        const data = await this.proyectoService.update(dto);
         return {data}
     }
 }
