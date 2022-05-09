@@ -43,9 +43,23 @@ export class CalificacionService {
             where: { id: id },
             relations: ['proyecto', 'proyecto.tipologia']
         })
-        await this.allDespublicar(elem.proyecto.id, elem.proyecto.tipologia.id)
-        elem.vigente = true
-        return this.calificacionRepository.save(elem)
+        let elemList:any = await this.calificacionRepository.find({
+            where: { proyecto: elem.proyecto.id },
+            relations: ['proyecto', 'proyecto.tipologia'],
+        })
+        const send = elemList.map(element => {
+            if(element.id !== elem.id){
+                return {
+                    ...element,
+                    vigente: false
+                }
+            }
+            return {
+                ...element,
+                vigente: true
+            }
+        })
+        return this.calificacionRepository.save(send)
     }
     async create(dto: CreateCalificacionDto) {
         const elem = new Calificacion()

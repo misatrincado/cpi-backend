@@ -13,9 +13,9 @@ export class ParametroController {
         return {data}
     }
 
-    @Get('/indicadores/:id')
-    async obtainAllWithIndicators(@Param('id') id: string) {
-        const data = await this.parametroService.obtainAllWithIndicators(id);
+    @Get('/indicadores/:idSub/:idTipo')
+    async obtainAllWithIndicators(@Param('idSub') idSub: string,@Param('idTipo') idTipo: string) {
+        const data = await this.parametroService.obtainAllWithIndicators(idSub, idTipo);
         return {data}
     }
 

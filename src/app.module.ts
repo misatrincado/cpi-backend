@@ -15,6 +15,7 @@ import { ParametroModule } from './parametro/parametro.module';
 import { TipologiaModule } from './tipologia/tipologia.module';
 import { ComunaModule } from './comuna/comuna.module';
 import config from './config';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -29,6 +30,9 @@ import config from './config';
         entities: ['dist/**/*.entity{.ts,.js}'],
         synchronize: true,
       }),
+    }),
+    MulterModule.register({
+      dest: './files',
     }),
     UserModule,
     EmpresaModule,

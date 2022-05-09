@@ -46,13 +46,15 @@ export class ResultadosService {
 
     async obtainAverages(idCalification: string) {
         const calificacion: any = await this.calificacionRepository.findOne({
-            where: { id: idCalification },
+            where: { id: idCalification, vigente: true },
             relations: ['proyecto', 'proyecto.tipologia']
         })
-        const listResults = await this.resultadosRepository.find({
+        let listResults = await this.resultadosRepository.find({
             where: { calificacion: idCalification },
             relations: ['indicador', 'indicador.parametro']
         })
+        listResults = listResults.filter((item:any) => item.indicador.activo)
+        
         const listAmbito = await this.ambitoRepository.find()
 
         const send = await Promise.all(
