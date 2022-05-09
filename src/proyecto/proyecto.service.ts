@@ -54,6 +54,7 @@ export class ProyectoService {
         if(find) {
           const update = Object.assign(find, dto)
            const saveDto = await this.proyectoRepository.save(update)
+           console.log("!-proyecto update saveDto => ",saveDto)
            return saveDto;
         }
         return null
