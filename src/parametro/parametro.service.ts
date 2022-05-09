@@ -12,7 +12,7 @@ export class ParametroService {
         @InjectRepository(Parametro)
         private readonly parametroRepository: Repository<Parametro>,
         @InjectRepository(Indicador)
-        private readonly indicatorRepository: Repository<Indicador>,
+        private readonly indicadorRepository: Repository<Indicador>,
     ) { }
 
     async findBySubambito(id: string) {
@@ -22,21 +22,23 @@ export class ParametroService {
         return getAll
     }
 
-    async obtainAllWithIndicators(id: string) {
+    async obtainAllWithIndicators(id: string, idTipo: string) {
         // Si el id es 0 se envian todos los subambitos
         let getParametro;
-        if(id === '0') {
-            getParametro = await this.parametroRepository.find()
+        if (id === '0') {
+            getParametro = await this.parametroRepository.find({
+                where: { activo: true }
+            })
         } else {
             getParametro = await this.parametroRepository.find({
-                where: { subambito: id }
+                where: { subambito: id, activo: true }
             })
         }
 
         const send = await Promise.all(
             getParametro.map(async i => {
-                const getIndicadores = await this.indicatorRepository.find({
-                    where: { parametro: i.id }
+                const getIndicadores = await this.indicadorRepository.find({
+                    where: { parametro: i.id, tipologia: idTipo, activo: true }
                 })
                 return {
                     ...i,
@@ -61,10 +63,10 @@ export class ParametroService {
         const find = await this.parametroRepository.findOne({
             id: dto.id
         })
-        if(find) {
-          const update = Object.assign(find, dto)
-           const saveDto = await this.parametroRepository.save(update)
-           return saveDto;
+        if (find) {
+            const update = Object.assign(find, dto)
+            const saveDto = await this.parametroRepository.save(update)
+            return saveDto;
         }
         return null
     }
