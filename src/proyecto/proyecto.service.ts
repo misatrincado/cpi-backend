@@ -48,6 +48,7 @@ export class ProyectoService {
     }
 
     async update(dto: UpdateProyectoDto) {
+        console.log("UPDATE", dto)
         const find = await this.proyectoRepository.findOne({
             id: dto.id,
         })

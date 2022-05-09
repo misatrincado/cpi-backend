@@ -58,7 +58,7 @@ export class UserController {
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: './files',
+        destination: '../files',
         filename: editFileName,
       }),
       fileFilter: imageFileFilter,
