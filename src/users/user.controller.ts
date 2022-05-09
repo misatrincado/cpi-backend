@@ -76,7 +76,7 @@ export class UserController {
 
   @Get('imagen/:imgpath')
   seeUploadedFile(@Param('imgpath') image, @Res() res) {
-    return res.sendFile(image, { root: './files' });
+    return res.sendFile(image, { root: '../files' });
   }
 
 }
