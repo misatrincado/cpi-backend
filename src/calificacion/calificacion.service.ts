@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Resultados } from 'src/resultados/resultados.entity';
 import { Repository } from 'typeorm';
 import { Calificacion } from './calificacion.entity';
 import { CreateCalificacionDto } from './dto/create.dto';
@@ -9,6 +10,8 @@ export class CalificacionService {
     constructor(
         @InjectRepository(Calificacion)
         private readonly calificacionRepository: Repository<Calificacion>,
+        @InjectRepository(Resultados)
+        private readonly resultadosRepository: Repository<Resultados>,
     ) { }
 
     async findByProyecto(id: string) {
@@ -25,8 +28,8 @@ export class CalificacionService {
         })
         return getAll
     }
-    async allDespublicar(idProyecto:number, idTipologia: number) {
-        let elem:any = await this.calificacionRepository.find({
+    async allDespublicar(idProyecto: number, idTipologia: number) {
+        let elem: any = await this.calificacionRepository.find({
             where: {
                 proyecto: idProyecto
             },
@@ -39,16 +42,16 @@ export class CalificacionService {
         })
     }
     async publicar(id: string) {
-        let elem:any = await this.calificacionRepository.findOne({
+        let elem: any = await this.calificacionRepository.findOne({
             where: { id: id },
             relations: ['proyecto', 'proyecto.tipologia']
         })
-        let elemList:any = await this.calificacionRepository.find({
+        let elemList: any = await this.calificacionRepository.find({
             where: { proyecto: elem.proyecto.id },
             relations: ['proyecto', 'proyecto.tipologia'],
         })
         const send = elemList.map(element => {
-            if(element.id !== elem.id){
+            if (element.id !== elem.id) {
                 return {
                     ...element,
                     vigente: false
@@ -70,5 +73,25 @@ export class CalificacionService {
         elem.urlCalificacion = ''
         const res = await this.calificacionRepository.save(elem)
         return res
+    }
+
+    async eliminar(id: string) {
+        const calificacion = await this.calificacionRepository.findOne({
+            where: { id: id },
+        });
+
+        if (!calificacion) {
+            return {
+                error: 'No existe calificación'
+            }
+        }
+        
+        const resultados = await this.resultadosRepository.find({
+            where: { calificacion: id },
+        });
+
+        await this.resultadosRepository.remove(resultados);
+        await this.calificacionRepository.remove(calificacion);
+        return true
     }
 }

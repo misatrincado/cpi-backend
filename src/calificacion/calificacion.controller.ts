@@ -27,4 +27,10 @@ export class CalificacionController {
         const data = await this.calificacionService.create(dto);
         return {data}
     }
+
+    @Get('/eliminar/:id')
+    async eliminar(@Param('id') id: string) {
+        const data = await this.calificacionService.eliminar(id);
+        return {data}
+    }
 }
