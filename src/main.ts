@@ -13,11 +13,11 @@ const httpsOptions = {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    httpsOptions
+    // httpsOptions
   });
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
   app.use(bodyParser.json({ limit: '50mb' }));
   app.enableCors();
-  await app.listen(443);
+  await app.listen(3500);
 }
 bootstrap();

@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 import { CreateResultadosDto } from './dto/create.dto';
 import { ResultadosService } from './resultados.service';
 
 @Controller('resultados')
 export class ResultadosController {
-    constructor(private readonly resultadosService: ResultadosService) {}
+    constructor(
+        private readonly resultadosService: ResultadosService,
+        ) {}
 
     @Get('/:id')
     async findByCalificacion(@Param('id') id) {
@@ -30,9 +32,11 @@ export class ResultadosController {
         return {data}
     }
 
-    @Get('/averages/pdf')
-    async obtainAveragesPDF(@Param('id') idCalificacion) {
-        const data = await this.resultadosService.obtainAveragesPDF(idCalificacion);
-        return {data}
+    @Get('/averages/pdf/:id')
+    async obtainAveragesPDF(@Param('id') idCalificacion, @Res() response) {
+        response.set({
+            'Content-Type': 'image/pdf',
+          });
+        return await this.resultadosService.obtainAveragesPDF(idCalificacion, response);
     }
 }

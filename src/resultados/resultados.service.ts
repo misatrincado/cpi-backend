@@ -8,8 +8,7 @@ import { Subambito } from 'src/subambito/subambito.entity';
 import { Repository } from 'typeorm';
 import { CreateResultadosDto } from './dto/create.dto';
 import { Resultados } from './resultados.entity';
-import { obtainIndicatorsFilled, obtainIndicatorsQty, promedioAmbito, promedioSubambito } from './utils/promedio';
-import * as fs from 'fs';
+import { obtainIndicatorsFilled, obtainIndicatorsQty, promedioAmbito, promedioParametro, promedioSubambito } from './utils/promedio';
 const PDFDocument = require("pdfkit-table");
 
 @Injectable()
@@ -56,7 +55,7 @@ export class ResultadosService {
             relations: ['indicador', 'indicador.parametro']
         })
         listResults = listResults.filter((item:any) => item.indicador.activo)
-        
+
         const listAmbito = await this.ambitoRepository.find()
 
         const send = await Promise.all(
@@ -138,19 +137,126 @@ export class ResultadosService {
         return elems
     }
 
-    async obtainAveragesPDF(idCalificacion: string) {
-        let doc = new PDFDocument({ margin: 30, size: 'A4' }) 
-        let data = this.obtainAverages(idCalificacion)
-        doc.pipe(fs.createWriteStream("./document.pdf"));
+    private async obtainWithParamsIndica(idAmbito: number, idTipo: string) {
+        const getSubambito = await this.subambitoRepository.find({
+            where: {
+                ambito: idAmbito,
+                activo: true
+            },
+            relations: ['ambito']
+        })
+        const send = await Promise.all(
+            getSubambito.map(async itemSub => {
+                const getParametros = await this.parametroRepository.find({
+                    where: { subambito: itemSub.id, activo: true }
+                })
 
-        const table = { 
-            title: 'asda',
-            headers: [ 'ambitos', 'subambitos' ],
-            datas: data,
-            rows: data,
-          }
-        
-        doc.table(table, { /* options */ }, () => { /* callback */ } );
+                const parametros = await Promise.all(
+                    getParametros.map(async itemParam => {
+                        const getIndicadores = await this.indicadorRepository.find({
+                            where: { parametro: itemParam.id, tipologia: idTipo, activo: true }
+                        })
+                        return {
+                            ...itemParam,
+                            indicadores: getIndicadores
+                        }
+                    })
+                )
+
+                return {
+                    ...itemSub,
+                    parametros
+                }
+            })
+        )
+        return send
+    }
+
+    async obtainAveragesPDF(idCalificacion: string, response) {
+        const calificacion: any = await this.calificacionRepository.findOne({
+            where: { id: idCalificacion },
+            relations: ['proyecto', 'proyecto.tipologia']
+        })
+
+        const listResults = await this.findByCalificacion(idCalificacion)
+        let data = await this.obtainAverages(idCalificacion)
+
+        const listSubambito = await Promise.all(
+            data.map(async itemAmbito => ({
+                ...itemAmbito,
+                subambito: await this.obtainWithParamsIndica(itemAmbito.id, calificacion.proyecto.tipologia.id)
+            }))
+        )
+        const listParametros = await this.parametroRepository.find({
+            where: {
+                activo: true
+            },
+            relations: ['subambito']
+        })
+
+        const listSubambitoRepo = await this.subambitoRepository.find({
+            where: {
+                activo: true
+            },
+            relations: ['ambito']
+        })
+
+        let doc = new PDFDocument({ margin: 30, size: 'A4' })
+
+        data.map((itemAmbito) => {
+            const subambitoListFilter = listSubambitoRepo.filter((item:any) => item.ambito.id === itemAmbito.id)
+            const promedioAm = promedioAmbito(listResults, subambitoListFilter, listParametros)
+            doc.fontSize(16)
+            doc.text('ÁMBITO' + `( ${promedioAm} ptos)`).font('Helvetica-Bold')
+            doc.fontSize(24)
+            doc.text(itemAmbito.nombre)
+            doc.fontSize(16)
+
+            doc.addPage()
+
+            let getSubambitos = listSubambito.find((i:any) => i.id === itemAmbito.id)
+            getSubambitos && getSubambitos.subambito.map((itemSubambito: any) => {
+                const promedioSub = promedioSubambito(listResults, listParametros, itemSubambito) || 0
+                doc.fontSize(16)
+                doc.text('SUBÁMBITO' + `( ${promedioSub} ptos)`);
+                doc.fontSize(20)
+                doc.text(itemSubambito.nombre).moveDown(2)
+
+
+                itemSubambito.parametros.map((itemParametro: any) => {
+
+                    doc.fontSize(14)
+                    const table = {
+                        title: itemParametro.nombre + `( ${promedioParametro(listResults, itemParametro.id)} ptos)`,
+                        headers: ["Indicador", 'Unidad', 'Valor', 'Puntos', 'Escala'],
+                        rows: itemParametro.indicadores.map(item => {
+                            const finder = listResults.find(i => i.idIndicador === item.id)
+                            return [
+                                item.nombre || ' ',
+                                item.unidad || ' ',
+                                finder?.valor || '',
+                                finder?.puntos || 0,
+                                item.escala || ' '
+                            ]
+                        }),
+                    };
+                    doc.table(table, {
+                        padding: 5,
+                        borderWidth: 1,
+                        borderColor: '#000',
+                        borderStyle: 'solid',
+                        fontSize: 12,
+                        headerRows: 1,
+                        startY: doc.y + 20,
+                        columnsSize: [250, 50, 50, 50, 150],
+                    })
+                    doc.moveDown(2)
+                })
+                doc.addPage()
+
+            })
+        })
         doc.end();
+        doc.pipe(response);
     }
 }

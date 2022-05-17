@@ -21,7 +21,7 @@ import { MulterModule } from '@nestjs/platform-express';
   imports: [
     TypeOrmModule.forRootAsync({
       useFactory: async () => ({
-        type: 'mysql',
+        type: 'mssql',
         host: config.DB.host,
         port: config.DB.port,
         username: config.DB.username,

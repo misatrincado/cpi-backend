@@ -5486,7 +5486,7 @@ pdfkit-table@^0.1.95:
   dependencies:
     pdfkit latest
 
-pdfkit@latest:
+pdfkit@^0.13.0, pdfkit@latest:
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/pdfkit/-/pdfkit-0.13.0.tgz#da4c2becd63a129e3aae448fdaed4ee7be790f8f"
   integrity sha512-AW79eHU5eLd2vgRDS9z3bSoi0FA+gYm+100LLosrQQMLUzOBGVOhG7ABcMFpJu7Bpg+MT74XYHi4k9EuU/9EZw==
