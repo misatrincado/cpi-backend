@@ -29,4 +29,10 @@ export class ResultadosController {
         const data = await this.resultadosService.createMany(dto);
         return {data}
     }
+
+    @Get('/averages/pdf')
+    async obtainAveragesPDF(@Param('id') idCalificacion) {
+        const data = await this.resultadosService.obtainAveragesPDF(idCalificacion);
+        return {data}
+    }
 }

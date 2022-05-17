@@ -9,6 +9,8 @@ import { Repository } from 'typeorm';
 import { CreateResultadosDto } from './dto/create.dto';
 import { Resultados } from './resultados.entity';
 import { obtainIndicatorsFilled, obtainIndicatorsQty, promedioAmbito, promedioSubambito } from './utils/promedio';
+import * as fs from 'fs';
+const PDFDocument = require("pdfkit-table");
 
 @Injectable()
 export class ResultadosService {
@@ -134,5 +136,21 @@ export class ResultadosService {
             })
         )
         return elems
+    }
+
+    async obtainAveragesPDF(idCalificacion: string) {
+        let doc = new PDFDocument({ margin: 30, size: 'A4' }) 
+        let data = this.obtainAverages(idCalificacion)
+        doc.pipe(fs.createWriteStream("./document.pdf"));
+
+        const table = { 
+            title: 'asda',
+            headers: [ 'ambitos', 'subambitos' ],
+            datas: data,
+            rows: data,
+          }
+        
+        doc.table(table, { /* options */ }, () => { /* callback */ } );
+        doc.end();
     }
 }
