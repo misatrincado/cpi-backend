@@ -216,14 +216,13 @@ export class ResultadosService {
 
             let getSubambitos = listSubambito.find((i: any) => i.id === itemAmbito.id)
             getSubambitos && getSubambitos.subambito.map((itemSubambito: any) => {
-                doc.on('pageAdded', () => doc.moveDown(2));
                 const promedioSub = promedioSubambito(listResults, listParametros, itemSubambito) || 0
                 doc.fontSize(16)
                 doc.font('Helvetica').text('SUBÁMBITO' + ` (${promedioSub}pts)`);
                 doc.fontSize(20)
                 doc.font('Helvetica-Bold').text(itemSubambito.nombre).moveDown(2)
 
-                itemSubambito.parametros.map((itemParametro: any) => {
+                itemSubambito.parametros.map((itemParametro: any, index) => {
 
                     doc.fontSize(14)
                     const table = {
@@ -251,6 +250,9 @@ export class ResultadosService {
                         columnsSize: [250, 50, 50, 50, 150],
                     })
                     doc.moveDown(5)
+                    if(index > 3) {
+                        doc.addPage()
+                    }
                 })
                 doc.addPage()
 
