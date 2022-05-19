@@ -3,10 +3,10 @@ export const ENV: 'development' | 'qa' | 'production' = 'development';
 const DB_DEV = {
   DB: {
     host: 'localhost',
-    username: 'sa',
-    password: 'Wallet2020',
-    database: 'cpi',
-    port: 1432,
+    username: 'root',
+    password: 'cpinmobiliario2022',
+    database: 'cpi_dev',
+    port: 33060,
   },
 };
 const DB_QA = {
