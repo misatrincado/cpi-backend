@@ -216,6 +216,7 @@ export class ResultadosService {
 
             let getSubambitos = listSubambito.find((i: any) => i.id === itemAmbito.id)
             getSubambitos && getSubambitos.subambito.map((itemSubambito: any) => {
+                doc.on('pageAdded', () => doc.moveDown(2));
                 const promedioSub = promedioSubambito(listResults, listParametros, itemSubambito) || 0
                 doc.fontSize(16)
                 doc.font('Helvetica').text('SUBÁMBITO' + ` (${promedioSub}pts)`);
