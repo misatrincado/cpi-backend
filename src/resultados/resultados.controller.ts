@@ -34,9 +34,6 @@ export class ResultadosController {
 
     @Get('/averages/pdf/:id')
     async obtainAveragesPDF(@Param('id') idCalificacion, @Res() response) {
-        response.set({
-            'Content-Type': 'image/pdf',
-          });
         return await this.resultadosService.obtainAveragesPDF(idCalificacion, response);
     }
 }
