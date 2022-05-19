@@ -8,6 +8,7 @@ import { Subambito } from 'src/subambito/subambito.entity';
 import { Repository } from 'typeorm';
 import { CreateResultadosDto } from './dto/create.dto';
 import { Resultados } from './resultados.entity';
+import { fetchImage } from './utils/fetchImage';
 import { obtainIndicatorsFilled, obtainIndicatorsQty, promedioAmbito, promedioParametro, promedioSubambito } from './utils/promedio';
 import moment = require("moment");
 const PDFDocument = require("pdfkit-table");
@@ -202,8 +203,31 @@ export class ResultadosService {
         })
 
         // Inicio del PDF
-        let doc = new PDFDocument({ margin: 30, size: 'A4', bufferPages: true, font: 'Helvetica' })
+        let doc = new PDFDocument({
+            margins: {
+                top: 70,
+                bottom: 40,
+                left: 30,
+                right: 30
+            }, size: 'A4', bufferPages: true, font: 'Helvetica'
+        })
         const filename = calificacion.proyecto.nombre + '_' + (moment(new Date()).format('DD-MM-YY'))
+
+        // Portada
+        const image = await fetchImage(calificacion.proyecto.imagen)
+        console.log("calificacion.proyecto", calificacion.proyecto)
+        doc.fontSize(24)
+            .font('Helvetica-Bold').text(calificacion.proyecto.nombre, { align: 'left' })
+            .fontSize(16)
+            .font('Helvetica')
+            .text(calificacion.proyecto.desc, { align: 'left' })
+            .text(calificacion.proyecto.direccion, { align: 'left' })
+            .text('Tipología: ' + calificacion.proyecto.tipologia.nombre, { align: 'left' })
+            
+        doc.image(image, 0, 200, { width: doc.page.width, height: 400, fit: [doc.page.width, 400], align: 'center', valign: 'center' })
+        doc.addPage()
+
+
         // Mapeo por ambito 
         data.map((itemAmbito) => {
             const subambitoListFilter = listSubambitoRepo.filter((item: any) => item.ambito.id === itemAmbito.id)
@@ -215,14 +239,17 @@ export class ResultadosService {
             doc.fontSize(16)
 
             let getSubambitos = listSubambito.find((i: any) => i.id === itemAmbito.id)
-            getSubambitos && getSubambitos.subambito.map((itemSubambito: any) => {
+            getSubambitos && [...getSubambitos.subambito, ...getSubambitos.subambito].map((itemSubambito: any) => {
                 const promedioSub = promedioSubambito(listResults, listParametros, itemSubambito) || 0
                 doc.fontSize(16)
                 doc.font('Helvetica').text('SUBÁMBITO' + ` (${promedioSub}pts)`);
                 doc.fontSize(20)
                 doc.font('Helvetica-Bold').text(itemSubambito.nombre).moveDown(2)
 
-                itemSubambito.parametros.map((itemParametro: any, index) => {
+                itemSubambito.parametros.map((itemParametro: any, index: number) => {
+                    if (index % 4 == 0 && index > 3) {
+                        doc.addPage()
+                    }
 
                     doc.fontSize(14)
                     const table = {
@@ -249,10 +276,7 @@ export class ResultadosService {
                         startY: doc.y + 20,
                         columnsSize: [250, 50, 50, 50, 150],
                     })
-                    doc.moveDown(5)
-                    if(index > 3) {
-                        doc.addPage()
-                    }
+                    doc.moveDown(3)
                 })
                 doc.addPage()
 
@@ -264,7 +288,7 @@ export class ResultadosService {
         for (let i = range.start; i < (range.start + range.count); i++) {
             doc.switchToPage(i);
             doc.fontSize(10)
-            doc.image('assets/logo.png', doc.page.width - 175, 25, {width: 150})
+            doc.image('assets/logo.png', doc.page.width - 175, 25, { width: 150 })
             doc.font('Helvetica').text(calificacion.proyecto.nombre + ' - ' + calificacion.proyecto.tipologia.nombre,
                 25,
                 doc.page.height - 20,
@@ -279,7 +303,7 @@ export class ResultadosService {
         response.set({
             'Content-Type': 'image/pdf',
             'Content-Disposition': `attachment; filename=${filename}.pdf`,
-          });
+        });
         doc.pipe(response);
     }
 }
