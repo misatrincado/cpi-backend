@@ -9,8 +9,8 @@ import { Repository } from 'typeorm';
 import { CreateResultadosDto } from './dto/create.dto';
 import { Resultados } from './resultados.entity';
 import { obtainIndicatorsFilled, obtainIndicatorsQty, promedioAmbito, promedioParametro, promedioSubambito } from './utils/promedio';
+import moment = require("moment");
 const PDFDocument = require("pdfkit-table");
-
 @Injectable()
 export class ResultadosService {
     constructor(
@@ -54,7 +54,7 @@ export class ResultadosService {
             where: { calificacion: idCalification },
             relations: ['indicador', 'indicador.parametro']
         })
-        listResults = listResults.filter((item:any) => item.indicador.activo)
+        listResults = listResults.filter((item: any) => item.indicador.activo)
 
         const listAmbito = await this.ambitoRepository.find()
 
@@ -201,33 +201,32 @@ export class ResultadosService {
             relations: ['ambito']
         })
 
-        let doc = new PDFDocument({ margin: 30, size: 'A4' })
-
+        // Inicio del PDF
+        let doc = new PDFDocument({ margin: 30, size: 'A4', bufferPages: true, font: 'Helvetica' })
+        const filename = calificacion.proyecto.nombre + '_' + (moment(new Date()).format('DD-MM-YY'))
+        // Mapeo por ambito 
         data.map((itemAmbito) => {
-            const subambitoListFilter = listSubambitoRepo.filter((item:any) => item.ambito.id === itemAmbito.id)
+            const subambitoListFilter = listSubambitoRepo.filter((item: any) => item.ambito.id === itemAmbito.id)
             const promedioAm = promedioAmbito(listResults, subambitoListFilter, listParametros)
             doc.fontSize(16)
-            doc.text('ÁMBITO' + `( ${promedioAm} ptos)`).font('Helvetica-Bold')
+            doc.font('Helvetica').text('ÁMBITO' + ` (${promedioAm}pts)`).font('Helvetica-Bold')
             doc.fontSize(24)
-            doc.text(itemAmbito.nombre)
+            doc.font('Helvetica-Bold').text(itemAmbito.nombre).moveDown(1)
             doc.fontSize(16)
 
-            doc.addPage()
-
-            let getSubambitos = listSubambito.find((i:any) => i.id === itemAmbito.id)
+            let getSubambitos = listSubambito.find((i: any) => i.id === itemAmbito.id)
             getSubambitos && getSubambitos.subambito.map((itemSubambito: any) => {
                 const promedioSub = promedioSubambito(listResults, listParametros, itemSubambito) || 0
                 doc.fontSize(16)
-                doc.text('SUBÁMBITO' + `( ${promedioSub} ptos)`);
+                doc.font('Helvetica').text('SUBÁMBITO' + ` (${promedioSub}pts)`);
                 doc.fontSize(20)
-                doc.text(itemSubambito.nombre).moveDown(2)
-
+                doc.font('Helvetica-Bold').text(itemSubambito.nombre).moveDown(2)
 
                 itemSubambito.parametros.map((itemParametro: any) => {
 
                     doc.fontSize(14)
                     const table = {
-                        title: itemParametro.nombre + `( ${promedioParametro(listResults, itemParametro.id)} ptos)`,
+                        title: itemParametro.nombre + ` (${promedioParametro(listResults, itemParametro.id)}pts)`,
                         headers: ["Indicador", 'Unidad', 'Valor', 'Puntos', 'Escala'],
                         rows: itemParametro.indicadores.map(item => {
                             const finder = listResults.find(i => i.idIndicador === item.id)
@@ -250,13 +249,34 @@ export class ResultadosService {
                         startY: doc.y + 20,
                         columnsSize: [250, 50, 50, 50, 150],
                     })
-                    doc.moveDown(2)
+                    doc.moveDown(5)
                 })
                 doc.addPage()
 
             })
         })
+
+        // Paginación y encabezados
+        const range = doc.bufferedPageRange();
+        for (let i = range.start; i < (range.start + range.count); i++) {
+            doc.switchToPage(i);
+            doc.fontSize(10)
+            doc.image('assets/logo.png', doc.page.width - 175, 25, {width: 150})
+            doc.font('Helvetica').text(calificacion.proyecto.nombre + ' - ' + calificacion.proyecto.tipologia.nombre,
+                25,
+                doc.page.height - 20,
+                { height: 25, width: 200 });
+            doc.font('Helvetica').text(`${i + 1} | ${range.count}`,
+                520,
+                doc.page.height - 20,
+                { height: 25, width: 50, align: 'right' });
+        }
         doc.end();
+
+        response.set({
+            'Content-Type': 'image/pdf',
+            'Content-Disposition': `attachment; filename=${filename}.pdf`,
+          });
         doc.pipe(response);
     }
 }
