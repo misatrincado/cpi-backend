@@ -82,7 +82,7 @@ export class ResultadosService {
                     relations: ['parametro']
                 })
                 const calculo = promedioAmbito(listResults, listSubambito, listParametros)
-                const indicadoresRellenos = obtainIndicatorsFilled(listResults, listSubambito, listParametros)
+                const indicadoresRellenos = obtainIndicatorsFilled(listResults, listSubambito, listParametros, listIndicadores)
                 const qty = obtainIndicatorsQty(listSubambito, listParametros, listIndicadores)
                 const subambitoAverages = listSubambito.map(itemSub => ({
                     amount: promedioSubambito(listResults, listParametros, itemSub.id)
@@ -246,11 +246,12 @@ export class ResultadosService {
                 doc.fontSize(20)
                 doc.font('Helvetica-Bold').text(itemSubambito.nombre).moveDown(2)
 
-                itemSubambito.parametros.map((itemParametro: any, index: number) => {
+                itemSubambito.parametros
+                .filter((itemParam: any) => itemParam.indicadores.length > 0)
+                .map((itemParametro: any, index: number) => {
                     if (index % 4 == 0 && index > 3) {
                         doc.addPage()
                     }
-
                     doc.fontSize(14)
                     const table = {
                         title: itemParametro.nombre + ` (${promedioParametro(listResults, itemParametro.id)}pts)`,

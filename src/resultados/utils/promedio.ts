@@ -39,11 +39,17 @@ export const promedioAmbito = (listResults, listSubambito, listParametros) => {
     return Math.round(calculo / length)
 }
 
-export const obtainIndicatorsFilled = (listResults, listSubambito, listParametros) => {
+export const obtainIndicatorsFilled = (listResults, listSubambito, listParametros, listIndicadores) => {
     let amount = 0
     listSubambito.map(itemSub => {
-        return listParametros.filter(i => i.subambito.id === itemSub.id).map(itemParam => {
-            const promedioFilter = listResults.filter(i => i.indicador.parametro.id === itemParam.id)
+        return listParametros
+        .filter(i => i.subambito.id === itemSub.id)
+        .map(itemParam => {
+            const promedioFilter = listResults.filter(i => {
+                if(i.indicador.parametro.id === itemParam.id) {
+                    return listIndicadores.find(indicador => indicador.id === i.indicador.id)
+                }
+            })
             const promedio = promedioFilter.filter(i => i.puntos > 0)
             amount += promedio.length
         })

@@ -35,18 +35,21 @@ export class ParametroService {
             })
         }
 
-        const send = await Promise.all(
+        let parametros = []
+        await Promise.all(
             getParametro.map(async i => {
                 const getIndicadores = await this.indicadorRepository.find({
                     where: { parametro: i.id, tipologia: idTipo, activo: true }
                 })
-                return {
-                    ...i,
-                    indicadores: getIndicadores
+                if (getIndicadores.length > 0) {
+                    parametros.push({
+                        ...i,
+                        indicadores: getIndicadores
+                    })
                 }
             })
         )
-        return send
+        return parametros
     }
     async create(dto: CreateParametroDto) {
         const elem = new Parametro()
