@@ -47,19 +47,22 @@ export class SubambitoService {
                 ambito: idAmbito,
                 activo: true
             },
-            relations: ['ambito']
+            relations: ['ambito'],
+            order: { nombre: 'ASC' }
         })
         const send = await Promise.all(
             getSubambito.map(async itemSub => {
                 const getParametros = await this.parametroRepository.find({
-                    where: { subambito: itemSub.id, activo: true }
+                    where: { subambito: itemSub.id, activo: true },
+                    order: { nombre: 'ASC' }
                 })
 
                 let parametros = []
                 await Promise.all(
                     getParametros.map(async itemParam => {
                         const getIndicadores = await this.indicadorRepository.find({
-                            where: { parametro: itemParam.id, tipologia: idTipo, activo: true }
+                            where: { parametro: itemParam.id, tipologia: idTipo, activo: true },
+                            order: { nombre: 'ASC' }
                         })
                         if (getIndicadores.length > 0) {
                             parametros.push({

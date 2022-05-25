@@ -12,7 +12,9 @@ export class ComunaService {
     ) { }
 
     async findAll() {
-        const getAll = await this.comunaRepository.find()
+        const getAll = await this.comunaRepository.find({
+            order: { nombre: 'ASC' }
+        })
         return getAll
     }
 

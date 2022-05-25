@@ -66,20 +66,23 @@ export class ResultadosService {
                         ambito: item.id,
                         activo: true
                     },
-                    relations: ['ambito']
+                    relations: ['ambito'],
+                    order: { nombre: 'ASC' }
                 })
                 const listParametros = await this.parametroRepository.find({
                     where: {
                         activo: true
                     },
-                    relations: ['subambito']
+                    relations: ['subambito'],
+                    order: { nombre: 'ASC' }
                 })
                 const listIndicadores = await this.indicadorRepository.find({
                     where: {
                         activo: true,
                         tipologia: calificacion.proyecto.tipologia.id,
                     },
-                    relations: ['parametro']
+                    relations: ['parametro'],
+                    order: { nombre: 'ASC' }
                 })
                 const calculo = promedioAmbito(listResults, listSubambito, listParametros)
                 const indicadoresRellenos = obtainIndicatorsFilled(listResults, listSubambito, listParametros, listIndicadores)
@@ -144,18 +147,21 @@ export class ResultadosService {
                 ambito: idAmbito,
                 activo: true
             },
-            relations: ['ambito']
+            relations: ['ambito'],
+            order: { nombre: 'ASC' }
         })
         const send = await Promise.all(
             getSubambito.map(async itemSub => {
                 const getParametros = await this.parametroRepository.find({
-                    where: { subambito: itemSub.id, activo: true }
+                    where: { subambito: itemSub.id, activo: true },
+                    order: { nombre: 'ASC' }
                 })
 
                 const parametros = await Promise.all(
                     getParametros.map(async itemParam => {
                         const getIndicadores = await this.indicadorRepository.find({
-                            where: { parametro: itemParam.id, tipologia: idTipo, activo: true }
+                            where: { parametro: itemParam.id, tipologia: idTipo, activo: true },
+                            order: { nombre: 'ASC' }
                         })
                         return {
                             ...itemParam,
@@ -192,14 +198,16 @@ export class ResultadosService {
             where: {
                 activo: true
             },
-            relations: ['subambito']
+            relations: ['subambito'],
+            order: { nombre: 'ASC' }
         })
 
         const listSubambitoRepo = await this.subambitoRepository.find({
             where: {
                 activo: true
             },
-            relations: ['ambito']
+            relations: ['ambito'],
+            order: { nombre: 'ASC' }
         })
 
         // Inicio del PDF

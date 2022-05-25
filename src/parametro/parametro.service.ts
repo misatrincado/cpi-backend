@@ -17,7 +17,8 @@ export class ParametroService {
 
     async findBySubambito(id: string) {
         const getAll = await this.parametroRepository.find({
-            where: { subambito: id }
+            where: { subambito: id },
+            order: { nombre: 'ASC' }
         })
         return getAll
     }
@@ -27,11 +28,13 @@ export class ParametroService {
         let getParametro;
         if (id === '0') {
             getParametro = await this.parametroRepository.find({
-                where: { activo: true }
+                where: { activo: true },
+                order: { nombre: 'ASC' }
             })
         } else {
             getParametro = await this.parametroRepository.find({
-                where: { subambito: id, activo: true }
+                where: { subambito: id, activo: true },
+                order: { nombre: 'ASC' }
             })
         }
 
@@ -39,7 +42,8 @@ export class ParametroService {
         await Promise.all(
             getParametro.map(async i => {
                 const getIndicadores = await this.indicadorRepository.find({
-                    where: { parametro: i.id, tipologia: idTipo, activo: true }
+                    where: { parametro: i.id, tipologia: idTipo, activo: true },
+                    order: { nombre: 'ASC' }
                 })
                 if (getIndicadores.length > 0) {
                     parametros.push({
