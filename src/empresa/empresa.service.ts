@@ -13,7 +13,9 @@ export class EmpresaService {
     ) { }
 
     async findAll() {
-        const getAll = await this.empresaRepository.find()
+        const getAll = await this.empresaRepository.find({
+            order: { nombre: 'ASC' }
+        })
         return getAll
     }
     async create(dto: CreateEmpresaDto) {

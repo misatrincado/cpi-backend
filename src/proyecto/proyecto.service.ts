@@ -14,7 +14,8 @@ export class ProyectoService {
 
     async findAll() {
         const getAll = await this.proyectoRepository.find({
-            relations: ['tipologia', 'comuna']
+            relations: ['tipologia', 'comuna'],
+            order: { nombre: 'ASC' }
         })
         return getAll
     }
@@ -30,7 +31,8 @@ export class ProyectoService {
     async findByEmpresa(id: string) {
         const getAll = await this.proyectoRepository.find({
             where: { empresa: id },
-            relations: ['tipologia', 'comuna']
+            relations: ['tipologia', 'comuna'],
+            order: { nombre: 'ASC' }
         })
         return getAll
     }

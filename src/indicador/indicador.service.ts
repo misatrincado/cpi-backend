@@ -15,7 +15,8 @@ export class IndicadorService {
     async findByParametroTipo(idParam: string, idTipo: string) {
         const getAll = await this.inidicadorRepository.find({
             where: { parametro: idParam, tipologia: idTipo },
-            relations: ['tipologia']
+            relations: ['tipologia'],
+            order: { nombre: 'ASC' }
         })
         return getAll
     }
