@@ -21,7 +21,8 @@ export class AmbitoService {
                 const getSubambito = await this.subambitoRepository.find({
                     where: {
                         ambito: item.id
-                    }
+                    },
+                    order: { nombre: 'ASC' }
                 })
                 return {
                     ...item,

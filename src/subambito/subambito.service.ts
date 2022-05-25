@@ -24,6 +24,7 @@ export class SubambitoService {
     async findByAmbito(id: string) {
         const getAll = await this.subambitoRepository.find({
             where: { ambito: id },
+            order: { nombre: 'ASC' }
         })
         return getAll
     }
